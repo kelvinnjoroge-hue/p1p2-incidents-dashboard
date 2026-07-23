@@ -352,6 +352,7 @@ function buildChipRow(container, options, selectedSet, colorMap, onChange){
     chip.addEventListener('click', () => {
       if(selectedSet.has(opt.value)) selectedSet.delete(opt.value);
       else selectedSet.add(opt.value);
+      chip.classList.toggle('active');
       onChange();
     });
     chip.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); chip.click(); } });

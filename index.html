@@ -185,6 +185,7 @@
     text-align:center; padding:50px 20px; color:var(--muted); background:var(--surface);
     border:1px dashed var(--border); border-radius:var(--radius); font-size:13px;
   }
+  .empty-state.is-clear{color:var(--green); border-color:var(--green); font-weight:700;}
 
   footer{
     text-align:center; font-size:10.5px; color:var(--muted-2); padding:24px 20px 40px;
@@ -495,7 +496,17 @@ function renderList(filtered){
   const list = document.getElementById('incident-list');
   list.innerHTML = '';
   if(!filtered.length){
-    list.append(el('div', {class:'empty-state'}, 'No incidents match the current filters.'));
+    const activeMonths = DATA.months.filter(m => state.months.has(m.key));
+    const allMonthsEmpty = activeMonths.length > 0 &&
+      activeMonths.every(m => !DATA.incidents.some(i => i.monthKey === m.key));
+    if(allMonthsEmpty){
+      const label = activeMonths.length === 1
+        ? `No P1 or P2 incidents recorded in ${activeMonths[0].full}.`
+        : 'No P1 or P2 incidents recorded in the selected period.';
+      list.append(el('div', {class:'empty-state is-clear'}, `✓ ${label}`));
+    } else {
+      list.append(el('div', {class:'empty-state'}, 'No incidents match the current filters.'));
+    }
     return;
   }
   const byMonth = new Map();
